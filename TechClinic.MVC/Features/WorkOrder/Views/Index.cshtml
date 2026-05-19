@@ -1,0 +1,96 @@
+@model List<TechClinic.MVC.Features.WorkOrder.WorkOrderListViewModel>
+@{
+    ViewData["Title"] = "Work Orders";
+    var filter = (TechClinic.MVC.Features.WorkOrder.WorkOrderFilterViewModel)ViewBag.Filter;
+}
+
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold">Search</label>
+                <input type="text" name="Keyword" value="@filter.Keyword" class="form-control form-control-sm" placeholder="Code, device, brand..." />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Status</label>
+                <select name="Status" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    @foreach (var s in filter.StatusOptions)
+                    {
+                        <option value="@s.Value" selected="@s.Selected">@s.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">From</label>
+                <input type="date" name="FromDate" value="@filter.FromDate?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">To</label>
+                <input type="date" name="ToDate" value="@filter.ToDate?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-primary btn-sm flex-fill">Search</button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <h6 class="mb-0 fw-semibold">Work Orders (@Model.Count)</h6>
+        <a asp-action="Create" class="btn btn-primary btn-sm">+ Create</a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Code</th>
+                        <th>Device</th>
+                        <th>Brand</th>
+                        <th>Intake Date</th>
+                        <th>Est. Cost</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var w in Model)
+                    {
+                        <tr>
+                            <td class="text-muted small">@w.WorkOrderCode</td>
+                            <td>@(w.DeviceType ?? "-")</td>
+                            <td>@(w.Brand ?? "-")</td>
+                            <td>@w.IntakeDate.ToString("dd MMM yyyy")</td>
+                            <td>@(w.EstimatedCost.HasValue ? w.EstimatedCost.Value.ToString("N2") : "-")</td>
+                            <td>
+                                @{
+                                    var badgeClass = w.Status switch
+                                    {
+                                        "Open"         => "bg-warning text-dark",
+                                        "InProgress"   => "bg-primary",
+                                        "WaitingParts" => "bg-danger",
+                                        "Completed"    => "bg-success",
+                                        "Cancelled"    => "bg-secondary",
+                                        _              => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@w.Status</span>
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@w.Id" class="btn btn-outline-primary btn-sm">View</a>
+                                <a asp-action="Edit" asp-route-id="@w.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="7" class="text-center text-muted py-4">No work orders found.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

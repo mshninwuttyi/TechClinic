@@ -1,0 +1,42 @@
+@model TechClinic.MVC.Features.Auth.LoginViewModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Admin Login";
+}
+
+<div class="d-flex align-items-center justify-content-center" style="min-height:100vh;">
+    <div class="card shadow" style="width:380px;">
+        <div class="card-body p-4">
+            <div class="text-center mb-4">
+                <h4 class="fw-bold">&#9874; TechClinic</h4>
+                <p class="text-muted small">Admin Portal</p>
+            </div>
+
+            <form asp-action="Login" method="post">
+                <input type="hidden" asp-for="@ViewData["ReturnUrl"]" name="returnUrl" />
+                @if (!ViewContext.ModelState.IsValid)
+                {
+                    <div asp-validation-summary="All" class="alert alert-danger small"></div>
+                }
+
+                <div class="mb-3">
+                    <label asp-for="UserName" class="form-label fw-semibold"></label>
+                    <input asp-for="UserName" class="form-control" placeholder="Enter username" autofocus />
+                    <span asp-validation-for="UserName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Password" class="form-label fw-semibold"></label>
+                    <input asp-for="Password" class="form-control" placeholder="Enter password" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

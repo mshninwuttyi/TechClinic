@@ -1,0 +1,63 @@
+@model TechClinic.MVC.Features.Invoice.InvoiceDetailsViewModel
+@{
+    ViewData["Title"] = "Invoice Details";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <div>
+                    <h6 class="mb-0 fw-semibold">@Model.InvoiceCode</h6>
+                    <small class="text-muted">Work Order: @Model.WorkOrderCode</small>
+                </div>
+                @if (Model.PaymentStatus == "Paid")
+                {
+                    <span class="badge bg-success fs-6">Paid</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark fs-6">Unpaid</span>
+                }
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td class="text-muted">Labor Fee</td>
+                        <td class="text-end">@(Model.LaborFee.HasValue ? Model.LaborFee.Value.ToString("N2") : "0.00")</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Parts Total</td>
+                        <td class="text-end">@(Model.PartsTotal.HasValue ? Model.PartsTotal.Value.ToString("N2") : "0.00")</td>
+                    </tr>
+                    <tr class="border-top fw-bold">
+                        <td>Grand Total</td>
+                        <td class="text-end fs-5">@(Model.GrandTotal.HasValue ? Model.GrandTotal.Value.ToString("N2") : "0.00")</td>
+                    </tr>
+                </table>
+
+                <div class="text-muted small mt-2">Generated: @Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</div>
+
+                <div class="d-flex gap-2 mt-4">
+                    @if (Model.PaymentStatus != "Paid")
+                    {
+                        <form asp-action="MarkPaid" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success">Mark as Paid</button>
+                        </form>
+                    }
+                    @if (Model.PaymentStatus == "Paid")
+                    {
+                        <form asp-action="MarkUnpaid" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-warning">Mark as Unpaid</button>
+                        </form>
+                    }
+                    <a asp-action="Index" class="btn btn-outline-secondary">&larr; Back</a>
+                    <a asp-controller="WorkOrder" asp-action="Details" asp-route-id="@Model.WorkOrderId"
+                       class="btn btn-outline-primary">View Work Order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

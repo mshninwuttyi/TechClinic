@@ -1,46 +1,111 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TechClinic.MVC</title>
+    <title>@ViewData["Title"] - TechClinic Admin</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/TechClinic.MVC.styles.css" asp-append-version="true" />
+    <style>
+        body { display: flex; min-height: 100vh; }
+        #sidebar {
+            width: 240px; min-height: 100vh; flex-shrink: 0;
+            background: #1e2a3a; color: #cdd3da;
+        }
+        #sidebar .brand {
+            padding: 1.25rem 1rem; font-size: 1.1rem; font-weight: 600;
+            color: #fff; border-bottom: 1px solid #2e3f55;
+        }
+        #sidebar .nav-link {
+            color: #adb5bd; padding: .55rem 1rem; border-radius: 0;
+            display: flex; align-items: center; gap: .5rem;
+        }
+        #sidebar .nav-link:hover, #sidebar .nav-link.active {
+            color: #fff; background: #2e3f55;
+        }
+        #sidebar .nav-section {
+            font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+            color: #5d7290; padding: 1rem 1rem .25rem;
+        }
+        #main { flex: 1; display: flex; flex-direction: column; background: #f4f6f9; }
+        #topbar {
+            background: #fff; border-bottom: 1px solid #dee2e6;
+            padding: .75rem 1.5rem; display: flex; justify-content: space-between; align-items: center;
+        }
+        #content { padding: 1.5rem; flex: 1; }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TechClinic.MVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="brand">&#9874; TechClinic</div>
+        <ul class="nav flex-column mt-2">
+            <li><span class="nav-section">Overview</span></li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")"
+                   asp-controller="Dashboard" asp-action="Index">
+                    &#128200; Dashboard
+                </a>
+            </li>
+            <li><span class="nav-section">Operations</span></li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "WorkOrder" ? "active" : "")"
+                   asp-controller="WorkOrder" asp-action="Index">
+                    &#128196; Work Orders
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Technician" ? "active" : "")"
+                   asp-controller="Technician" asp-action="Index">
+                    &#128295; Technicians
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "SparePart" ? "active" : "")"
+                   asp-controller="SparePart" asp-action="Index">
+                    &#128230; Spare Parts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Invoice" ? "active" : "")"
+                   asp-controller="Invoice" asp-action="Index">
+                    &#129534; Invoices
+                </a>
+            </li>
+            <li><span class="nav-section">Account</span></li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Auth" asp-action="Logout">
+                    &#128682; Logout
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main area -->
+    <div id="main">
+        <div id="topbar">
+            <h6 class="mb-0 fw-semibold">@ViewData["Title"]</h6>
+            <span class="text-muted small">Welcome, @User.Identity?.Name</span>
+        </div>
+        <div id="content">
+            @if (TempData["Success"] is string success)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @success
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+            }
+            @if (TempData["Error"] is string error)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @error
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
             @RenderBody()
-        </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - TechClinic.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

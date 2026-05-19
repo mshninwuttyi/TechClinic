@@ -1,0 +1,57 @@
+@model List<TechClinic.MVC.Features.Invoice.InvoiceListViewModel>
+@{
+    ViewData["Title"] = "Invoices";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <h6 class="mb-0 fw-semibold">Invoices (@Model.Count)</h6>
+        <a asp-controller="WorkOrder" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            &larr; Work Orders
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Invoice Code</th>
+                        <th>Work Order</th>
+                        <th>Grand Total</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var i in Model)
+                    {
+                        <tr>
+                            <td class="text-muted small">@i.InvoiceCode</td>
+                            <td>@i.WorkOrderCode</td>
+                            <td>@(i.GrandTotal.HasValue ? i.GrandTotal.Value.ToString("N2") : "-")</td>
+                            <td>
+                                @if (i.PaymentStatus == "Paid")
+                                {
+                                    <span class="badge bg-success">Paid</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Unpaid</span>
+                                }
+                            </td>
+                            <td>@i.CreatedAt.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@i.Id" class="btn btn-outline-primary btn-sm">View</a>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="6" class="text-center text-muted py-4">No invoices found.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

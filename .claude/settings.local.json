@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Hnin_Wuttyi\\\\Learning_Project\\\\My_Projects\\\\TechClinic\" -Recurse -File -Include \"*.csproj\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet ef *)",
+      "Bash(dotnet script *)",
+      "Bash(dotnet-script)",
+      "Bash(node -e \"const crypto=require\\('crypto'\\);console.log\\(crypto.createHash\\('sha256'\\).update\\('admin123','utf8'\\).digest\\('base64'\\)\\)\")",
+      "Bash(python3 -c \"import hashlib,base64;print\\(base64.b64encode\\(hashlib.sha256\\(b'admin123'\\).digest\\(\\)\\).decode\\(\\)\\)\")",
+      "Bash(sqlcmd -S 'HNINWUTTYI\\\\MSSQLSERVER2022' -U sa -P admin123! -d TechClinic -Q ' *)"
+    ]
+  }
+}
